@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Valeria Maximiliana — Mi pequeña princesa</title>
+<meta name="description" content="La historia de Valeria Maximiliana Carrasco, contada por su papá. Un álbum digital que crece con ella, año tras año.">
+<meta name="theme-color" content="#f3e6f7">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<!-- ============================================================
+     FONDO DE PARTÍCULAS GLOBAL (estrellas/brillos muy sutiles)
+     ============================================================ -->
+<canvas id="bg-particles" aria-hidden="true"></canvas>
+
+<!-- ============================================================
+     INTRO CINEMATOGRÁFICA
+     ============================================================ -->
+<div id="intro" role="dialog" aria-label="Introducción">
+    <div id="intro-stars" aria-hidden="true"></div>
+    <div class="intro-content">
+        <p class="intro-line" id="intro-line-1">Hay días que cambian nuestra vida para siempre&hellip;</p>
+        <p class="intro-line" id="intro-line-2">Para mí, ese día fue&hellip;</p>
+        <p class="intro-date" id="intro-date">29 DE JUNIO DE 2024</p>
+
+        <div class="intro-name-block" id="intro-name-block">
+            <!-- REEMPLAZAR POR FOTO REAL si se desea otra imagen de nacimiento -->
+            <img class="intro-photo" src="assets/fotos/nacimiento/bebe_recien_nacida_gorro_rosa.jpg" alt="Valeria Maximiliana el día de su nacimiento">
+            <h1 class="intro-name">VALERIA MAXIMILIANA</h1>
+            <p class="intro-subtitle">Mi pequeña princesa</p>
+        </div>
+
+        <div class="intro-cta" id="intro-cta">
+            <button type="button" class="btn btn-primary" id="start-journey-btn">Comenzar nuestra historia ❤️</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     NAVEGACIÓN DE PROGRESO Y CONTROLES FLOTANTES
+     ============================================================ -->
+<nav id="progress-nav" aria-label="Progreso de la historia"></nav>
+
+<div class="floating-controls">
+    <button type="button" id="music-toggle-btn" class="floating-btn" data-playing="false" aria-pressed="false" aria-label="Reproducir música">
+        <span class="music-note-icon" aria-hidden="true"></span>
+    </button>
+    <button type="button" id="back-to-top" class="floating-btn" aria-label="Volver arriba">↑</button>
+</div>
+
+<audio id="bg-music" loop preload="none">
+    <source src="assets/music/cancion-para-valeria.mp3" type="audio/mpeg">
+</audio>
+
+<main id="main-content" aria-hidden="false">
+
+    <!-- ============================================================
+         CAPÍTULO 1 — EL DÍA QUE NACISTE
+         ============================================================ -->
+    <section class="chapter chapter-birth reveal" data-chapter="El día que naciste" id="capitulo-nacimiento">
+        <p class="eyebrow">Capítulo uno</p>
+        <h2 class="section-title">El día que llegaste a mi vida</h2>
+        <p class="birth-date">29 de junio de 2024</p>
+
+        <div class="birth-photo-frame">
+            <!-- REEMPLAZAR POR FOTO REAL si se desea otra imagen -->
+            <img src="assets/fotos/nacimiento/bebe_recien_nacida_cama_1.jpg" alt="Valeria recién nacida" loading="lazy">
+        </div>
+
+        <div class="story-text">
+            <!-- Texto fácilmente editable -->
+            <p>Ese día conocí un amor que no sabía que podía existir.
+            Desde el momento en que te vi, entendí que mi vida ya nunca sería igual.
+            Llegaste tan pequeña, pero llenaste completamente mi corazón.</p>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         CONTADOR DE VIDA
+         ============================================================ -->
+    <section class="section counter-wrap reveal" data-chapter="Contador de vida" id="contador">
+        <p class="eyebrow">En este instante</p>
+        <h2 class="counter-headline"><span data-config="nombreCorto">Valeria</span> lleva iluminando este mundo&hellip;</h2>
+
+        <div class="counter-big">
+            <div class="unit"><span class="value" id="counter-anios">0</span><span class="label">Años</span></div>
+            <div class="unit"><span class="value" id="counter-meses">0</span><span class="label">Meses</span></div>
+            <div class="unit"><span class="value" id="counter-dias">0</span><span class="label">Días</span></div>
+        </div>
+
+        <div class="counter-cards">
+            <div class="counter-card">
+                <span class="icon" aria-hidden="true">❤️</span>
+                <span class="number" id="card-dias-vida">0</span>
+                <span class="desc">Días de vida</span>
+            </div>
+            <div class="counter-card">
+                <span class="icon" aria-hidden="true">🌙</span>
+                <span class="number" id="card-noches">0</span>
+                <span class="desc">Noches desde que nació</span>
+            </div>
+            <div class="counter-card">
+                <span class="icon" aria-hidden="true">⏱️</span>
+                <span class="number" id="card-horas">0</span>
+                <span class="desc">Horas de vida</span>
+            </div>
+            <div class="counter-card">
+                <span class="icon" aria-hidden="true">🌎</span>
+                <span class="number" id="card-vueltas-sol">0</span>
+                <span class="desc">Vueltas al sol</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         LÍNEA DE TIEMPO (generada dinámicamente por js/timeline.js)
+         ============================================================ -->
+    <section class="section reveal" data-chapter="Línea de tiempo" id="linea-de-tiempo">
+        <div class="section-header">
+            <p class="eyebrow">Nuestra historia</p>
+            <h2 class="section-title">Capítulo a capítulo</h2>
+            <p class="section-subtitle">Cada año, una nueva aventura. Esta línea de tiempo seguirá creciendo junto a ella.</p>
+        </div>
+        <div id="timeline-container"></div>
+    </section>
+
+    <!-- ============================================================
+         POLAROIDS DE RECUERDOS
+         ============================================================ -->
+    <section class="section section--alt reveal" data-chapter="Polaroids" id="polaroids">
+        <div class="section-header">
+            <p class="eyebrow">Instantáneas</p>
+            <h2 class="section-title">Pequeños recuerdos</h2>
+        </div>
+        <div class="polaroid-row">
+            <figure class="polaroid" data-lightbox="assets/fotos/nacimiento/bebe_recien_nacida_gorro_rosa.jpg" data-caption="Recién llegada">
+                <img src="assets/fotos/nacimiento/bebe_recien_nacida_gorro_rosa.jpg" alt="Valeria recién nacida con gorro rosa" loading="lazy">
+                <figcaption class="polaroid-caption">Recién llegada</figcaption>
+                <p class="polaroid-date">Junio 2024</p>
+            </figure>
+            <figure class="polaroid" data-lightbox="assets/fotos/2024/bebe_hamaca_sonajero_jirafa.jpg" data-caption="Descubriendo el mundo">
+                <img src="assets/fotos/2024/bebe_hamaca_sonajero_jirafa.jpg" alt="Valeria bebé jugando" loading="lazy">
+                <figcaption class="polaroid-caption">Descubriendo el mundo</figcaption>
+                <p class="polaroid-date">2024</p>
+            </figure>
+            <figure class="polaroid" data-lightbox="assets/fotos/2024/familia_pastel_ceremonia.jpg" data-caption="Un día especial en familia">
+                <img src="assets/fotos/2024/familia_pastel_ceremonia.jpg" alt="Familia celebrando con Valeria" loading="lazy">
+                <figcaption class="polaroid-caption">En familia</figcaption>
+                <p class="polaroid-date">2024</p>
+            </figure>
+            <figure class="polaroid" data-lightbox="assets/fotos/2026/valeria_bosque_piedras_1.jpg" data-caption="Pequeña exploradora">
+                <img src="assets/fotos/2026/valeria_bosque_piedras_1.jpg" alt="Valeria explorando el bosque de piedras" loading="lazy">
+                <figcaption class="polaroid-caption">Pequeña exploradora</figcaption>
+                <p class="polaroid-date">2026</p>
+            </figure>
+            <figure class="polaroid" data-lightbox="assets/fotos/2026/papa_valeria_catarata.jpg" data-caption="De la mano siempre">
+                <img src="assets/fotos/2026/papa_valeria_catarata.jpg" alt="Papá y Valeria frente a una catarata" loading="lazy">
+                <figcaption class="polaroid-caption">De la mano, siempre</figcaption>
+                <p class="polaroid-date">2026</p>
+            </figure>
+            <figure class="polaroid" data-lightbox="assets/fotos/2026/selfie_papa_valeria_calle.jpg" data-caption="Así eres hoy">
+                <img src="assets/fotos/2026/selfie_papa_valeria_calle.jpg" alt="Valeria hoy" loading="lazy">
+                <figcaption class="polaroid-caption">Así eres hoy</figcaption>
+                <p class="polaroid-date">Hoy</p>
+            </figure>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         GALERÍA DE FOTOGRAFÍAS
+         ============================================================ -->
+    <section class="section reveal" data-chapter="Galería" id="galeria">
+        <div class="section-header">
+            <p class="eyebrow">Álbum completo</p>
+            <h2 class="section-title">Nuestra galería de recuerdos</h2>
+            <p class="section-subtitle">Toca cualquier fotografía para verla en grande.</p>
+        </div>
+        <div id="gallery-tabs-container"></div>
+        <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+
+    <!-- ============================================================
+         PRIMEROS PASOS
+         ============================================================ -->
+    <section class="section steps-section reveal" data-chapter="Primeros pasos" id="primeros-pasos">
+        <p class="eyebrow">Un paso a la vez</p>
+        <h2 class="section-title">Tus primeros pasitos</h2>
+        <p class="section-subtitle">Paso a paso comenzaste a descubrir el mundo&hellip;</p>
+        <div class="footprint-track" id="footprint-track" aria-hidden="true"></div>
+    </section>
+
+    <!-- ============================================================
+         PRIMER CUMPLEAÑOS
+         ============================================================ -->
+    <section class="birthday-section birthday-first reveal" data-chapter="Primer cumpleaños" id="birthday-first">
+        <div class="confetti-layer" id="confetti-layer-1" aria-hidden="true"></div>
+        <div class="balloon-layer" id="balloon-layer-1" aria-hidden="true"></div>
+        <p class="eyebrow">29 de junio de 2025</p>
+        <h2 class="birthday-badge">🎂 Tu primer añito</h2>
+        <p class="birthday-days">365 días contigo</p>
+        <div class="birthday-gallery">
+            <!-- REEMPLAZAR POR FOTO REAL: fotografías del primer cumpleaños -->
+            <img src="assets/fotos/2024/familia_pastel_ceremonia.jpg" alt="Celebración especial de Valeria" loading="lazy" data-lightbox="assets/fotos/2024/familia_pastel_ceremonia.jpg" data-caption="Celebrando en familia">
+            <img src="assets/fotos/2024/bebe_andador_rosa.jpg" alt="Valeria en su andador" loading="lazy" data-lightbox="assets/fotos/2024/bebe_andador_rosa.jpg" data-caption="Explorando en su andador">
+            <img src="assets/fotos/2024/papa_bebe_gorro_rosa_flor.jpg" alt="Papá y Valeria" loading="lazy" data-lightbox="assets/fotos/2024/papa_bebe_gorro_rosa_flor.jpg" data-caption="Con papá">
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SEGUNDO CUMPLEAÑOS
+         ============================================================ -->
+    <section class="birthday-section birthday-second reveal" data-chapter="Segundo cumpleaños" id="birthday-second">
+        <div class="confetti-layer" id="confetti-layer-2" aria-hidden="true"></div>
+        <div class="balloon-layer sparkle-layer" id="sparkle-layer-2" aria-hidden="true"></div>
+        <p class="eyebrow">29 de junio de 2026</p>
+        <h2 class="birthday-badge">👑 Tus 2 añitos</h2>
+        <p class="birthday-days">730 días de aventuras</p>
+        <div class="birthday-gallery">
+            <!-- REEMPLAZAR POR FOTO REAL: fotografías del segundo cumpleaños -->
+            <img src="assets/fotos/2026/valeria_sombrero_flor_mirador_1.jpg" alt="Valeria con sombrero de flores" loading="lazy" data-lightbox="assets/fotos/2026/valeria_sombrero_flor_mirador_1.jpg" data-caption="Mi pequeña princesa">
+            <img src="assets/fotos/2026/valeria_sombrero_flor_terraza_1.jpg" alt="Valeria sonriendo" loading="lazy" data-lightbox="assets/fotos/2026/valeria_sombrero_flor_terraza_1.jpg" data-caption="Sonrisas de cumpleaños">
+            <img src="assets/fotos/2026/papa_valeria_canon_colca_1.jpg" alt="Papá y Valeria de aventura" loading="lazy" data-lightbox="assets/fotos/2026/papa_valeria_canon_colca_1.jpg" data-caption="De aventura con papá">
+        </div>
+    </section>
+
+    <!-- ============================================================
+         MENSAJES ESCONDIDOS
+         ============================================================ -->
+    <section class="section reveal" data-chapter="Mensajes escondidos" id="mensajes-escondidos">
+        <div class="section-header">
+            <p class="eyebrow">Toca una estrella</p>
+            <h2 class="section-title">Mensajes escondidos para ti</h2>
+            <p class="section-subtitle">Hay pequeños secretos escondidos aquí. Descúbrelos.</p>
+        </div>
+        <div class="secret-field" id="secret-field"></div>
+    </section>
+
+    <!-- ============================================================
+         ÁRBOL DE RECUERDOS
+         ============================================================ -->
+    <section class="section reveal" data-chapter="Árbol de recuerdos" id="arbol-de-recuerdos">
+        <div class="section-header">
+            <p class="eyebrow">Nuestras raíces</p>
+            <h2 class="section-title">Nuestro árbol de recuerdos</h2>
+        </div>
+        <div class="tree-wrap" aria-hidden="true">
+            <svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Árbol estilizado que representa los recuerdos de Valeria">
+                <defs>
+                    <linearGradient id="trunkGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#c9a985"/>
+                        <stop offset="100%" stop-color="#a9835f"/>
+                    </linearGradient>
+                </defs>
+                <path d="M160 300 C155 250 165 210 160 170" stroke="url(#trunkGradient)" stroke-width="14" fill="none" stroke-linecap="round"/>
+                <path d="M160 220 C130 200 110 190 90 170" stroke="url(#trunkGradient)" stroke-width="8" fill="none" stroke-linecap="round"/>
+                <path d="M160 200 C190 180 210 170 235 155" stroke="url(#trunkGradient)" stroke-width="8" fill="none" stroke-linecap="round"/>
+                <g fill="#e8b4c8" opacity="0.9">
+                    <circle cx="160" cy="120" r="55"/>
+                    <circle cx="105" cy="150" r="42"/>
+                    <circle cx="215" cy="150" r="42"/>
+                    <circle cx="120" cy="95" r="38"/>
+                    <circle cx="200" cy="95" r="38"/>
+                </g>
+                <g fill="#c9b6e4" opacity="0.75">
+                    <circle cx="160" cy="90" r="30"/>
+                    <circle cx="90" cy="130" r="22"/>
+                    <circle cx="230" cy="130" r="22"/>
+                </g>
+                <g fill="#ffffff" opacity="0.85" font-size="18">
+                    <text x="140" y="110">❤</text>
+                    <text x="185" y="140">❤</text>
+                    <text x="110" y="150">❤</text>
+                    <text x="200" y="100">❤</text>
+                </g>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         ¿SABES CUÁNTO TE QUIERO?
+         ============================================================ -->
+    <section class="section love-question-section reveal" data-chapter="¿Sabes cuánto te quiero?" id="cuanto-te-quiero">
+        <p class="eyebrow">Una pregunta importante</p>
+        <h2 class="section-title">Tengo una pregunta para ti&hellip;</h2>
+        <button type="button" class="love-heart-btn" id="love-question-btn" aria-haspopup="dialog">❤️ ¿Sabes cuánto te quiero?</button>
+    </section>
+
+    <div class="love-overlay" id="love-overlay" role="dialog" aria-modal="true" aria-label="Hasta el infinito">
+        <div class="love-overlay-content">
+            <p class="love-infinite">HASTA EL INFINITO</p>
+            <p class="love-symbol">♾️ ❤️</p>
+            <p class="love-extra">Y un poquito más&hellip;</p>
+            <button type="button" class="btn btn-outline love-close" id="love-close-btn">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         CARTA DE PAPÁ
+         ============================================================ -->
+    <section class="section letter-section reveal" data-chapter="Carta de papá" id="carta-de-papa">
+        <div class="section-header">
+            <p class="eyebrow">Con todo mi amor</p>
+            <h2 class="section-title">Una carta de papá</h2>
+        </div>
+
+        <div class="envelope" id="envelope" tabindex="0" role="button" aria-label="Abrir la carta de papá">
+            <span class="envelope-emoji" aria-hidden="true">💌</span>
+            <p><button type="button" class="btn btn-primary" id="open-letter-btn">Abrir carta</button></p>
+        </div>
+
+        <!-- Texto fácilmente editable -->
+        <article class="letter-paper" id="letter-paper">
+            <p>Mi princesa <span data-config="nombre">Valeria Maximiliana</span>:</p>
+            <p>Quizá hoy todavía seas demasiado pequeña para comprender estas palabras.
+            Hice este pequeño lugar para que algún día puedas regresar aquí y descubrir cuánto te he amado desde el comienzo de tu historia.</p>
+            <p>Desde aquel 29 de junio de 2024 muchas cosas cambiaron en mi vida.
+            Llegaste pequeña, frágil y hermosa, pero trajiste contigo una forma de amor que nunca antes había conocido.</p>
+            <p>Cada sonrisa, cada pequeña palabra, cada juego, cada paso y cada momento contigo se convirtió en un recuerdo que quiero guardar para siempre.</p>
+            <p>Tal vez algún día seas grande y tengas tus propios sueños, tus propios caminos y tus propias aventuras.
+            Cuando llegue ese momento quiero que recuerdes algo: siempre voy a estar orgulloso de ti.
+            No importa cuántos años tengas.</p>
+            <p>Para mí siempre existirán aquellos pequeños ojos que un día me enseñaron lo que significa ser papá.</p>
+            <p>Nunca tengas miedo de soñar.
+            Nunca tengas miedo de equivocarte.
+            Nunca tengas miedo de empezar otra vez.</p>
+            <p>Y recuerda que, sin importar dónde estés o cuántos años hayan pasado, siempre tendrás un lugar en mi corazón.</p>
+            <p class="letter-signature">Con todo mi amor,<br>Papá ❤️</p>
+        </article>
+    </section>
+
+    <!-- ============================================================
+         HOY
+         ============================================================ -->
+    <section class="section reveal" data-chapter="Hoy" id="hoy" style="text-align:center;">
+        <p class="eyebrow">El presente</p>
+        <h2 class="section-title">Y aquí estamos hoy&hellip;</h2>
+
+        <div class="today-photo">
+            <!-- REEMPLAZAR POR FOTO REAL -->
+            <img src="assets/fotos/2026/selfie_papa_valeria_calle.jpg" alt="Valeria hoy" loading="lazy">
+        </div>
+
+        <p class="story-text" style="margin-left:auto;margin-right:auto;">
+            Sigues creciendo. Sigues descubriendo el mundo.
+            Y yo sigo maravillándome con cada nueva versión de ti.
+        </p>
+
+        <div class="counter-big">
+            <div class="unit"><span class="value" id="counter-anios-2">0</span><span class="label">Años</span></div>
+            <div class="unit"><span class="value" id="counter-meses-2">0</span><span class="label">Meses</span></div>
+            <div class="unit"><span class="value" id="counter-dias-2">0</span><span class="label">Días</span></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         ESTA HISTORIA CONTINUARÁ
+         ============================================================ -->
+    <section class="section reveal" data-chapter="Esta historia continuará" id="continuara" style="text-align:center;">
+        <p class="eyebrow">Un sitio que crece con ella</p>
+        <h2 class="section-title">Esta historia continuará&hellip;</h2>
+        <p class="section-subtitle">Cada año se agregará un nuevo capítulo a esta historia, tal como Valeria seguirá creciendo.</p>
+        <div class="future-years" id="future-chapters"></div>
+    </section>
+
+</main>
+
+<!-- ============================================================
+     PIE DE PÁGINA
+     ============================================================ -->
+<footer>
+    <p>Hecho con todo el amor de <strong data-config="autor">papá</strong> ❤️</p>
+    <p>Para <strong data-config="nombre">Valeria Maximiliana</strong></p>
+    <p><em>Nuestra historia continúa&hellip;</em></p>
+</footer>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script src="js/config.js"></script>
+<script src="js/particles.js"></script>
+<script src="js/counter.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/gallery.js"></script>
+<script src="js/surprises.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

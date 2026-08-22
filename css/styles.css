@@ -1,0 +1,1087 @@
+/* ============================================================
+   VALERIA MAXIMILIANA — Estilos principales
+   Sistema de diseño: rosa pastel, rosa viejo, lavanda, crema,
+   dorado suave y detalles púrpura. Cálido, elegante, delicado.
+   ============================================================ */
+
+:root {
+    /* Paleta principal */
+    --color-primary: #e8b4c8;        /* rosa pastel */
+    --color-primary-dark: #c98da8;   /* rosa viejo */
+    --color-secondary: #c9b6e4;      /* lavanda */
+    --color-secondary-dark: #a68fce; /* púrpura suave */
+    --color-gold: #e3c68a;           /* dorado suave */
+    --color-gold-light: #f3ddb0;
+
+    --color-background: #fffaf6;     /* crema */
+    --color-background-alt: #fdf2f6; /* rosa muy claro */
+    --color-surface: #ffffff;
+    --color-night: #1c1630;          /* fondo nocturno intro */
+    --color-night-deep: #100c1e;
+
+    --color-text: #4a3b4c;
+    --color-text-soft: #7a6a7d;
+    --color-text-invert: #fffaf6;
+    --color-border: rgba(169, 133, 158, 0.25);
+
+    /* Gradientes */
+    --gradient-hero: linear-gradient(160deg, #fdf2f6 0%, #f3e6f7 45%, #eee0f6 100%);
+    --gradient-warm: linear-gradient(135deg, #f9dfe8 0%, #f3e6f7 100%);
+    --gradient-gold: linear-gradient(135deg, var(--color-gold-light), var(--color-gold));
+    --gradient-night: radial-gradient(ellipse at 50% 20%, #2a2050 0%, #1c1630 55%, #100c1e 100%);
+
+    /* Tipografía */
+    --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-body: 'Quicksand', 'Segoe UI', sans-serif;
+
+    /* Espaciado */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.75rem;
+    --space-lg: 3rem;
+    --space-xl: 5rem;
+
+    /* Bordes y sombras */
+    --radius-sm: 12px;
+    --radius-md: 22px;
+    --radius-lg: 32px;
+    --shadow-soft: 0 10px 30px rgba(169, 133, 158, 0.18);
+    --shadow-strong: 0 20px 50px rgba(90, 60, 90, 0.25);
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.65);
+
+    --max-width: 1100px;
+    --transition-base: 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- Reset básico ---------- */
+* , *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--color-background);
+    color: var(--color-text);
+    overflow-x: hidden;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    margin: 0 0 var(--space-sm);
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+p { margin: 0 0 var(--space-sm); }
+
+a { color: inherit; }
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+}
+
+ul { list-style: none; margin: 0; padding: 0; }
+
+.hidden { display: none !important; }
+
+.visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------- Utilidades de sección ---------- */
+.section {
+    position: relative;
+    width: 100%;
+    padding: var(--space-xl) var(--space-sm);
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+.section--tight {
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-lg);
+}
+
+.section--alt {
+    background: var(--gradient-warm);
+    max-width: none;
+    border-radius: var(--radius-lg);
+}
+
+.section-header {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto var(--space-lg);
+}
+
+.eyebrow {
+    display: inline-block;
+    font-family: var(--font-body);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--color-primary-dark);
+    margin-bottom: var(--space-xs);
+}
+
+.section-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+}
+
+.section-subtitle {
+    color: var(--color-text-soft);
+    font-size: 1.05rem;
+}
+
+.divider-heart {
+    display: block;
+    text-align: center;
+    margin: var(--space-sm) auto;
+    color: var(--color-primary-dark);
+    font-size: 1.2rem;
+}
+
+/* ---------- Botones ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.9rem 2rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    min-height: 48px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary-dark));
+    color: #fff;
+    box-shadow: var(--shadow-soft);
+}
+
+.btn-primary:hover, .btn-primary:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-strong);
+}
+
+.btn-outline {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--color-text);
+    backdrop-filter: blur(6px);
+}
+
+.btn-outline:hover, .btn-outline:focus-visible {
+    background: #fff;
+}
+
+.btn:focus-visible {
+    outline: 3px solid var(--color-secondary-dark);
+    outline-offset: 3px;
+}
+
+/* ============================================================
+   INTRO CINEMATOGRÁFICA
+   ============================================================ */
+#intro {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--gradient-night);
+    color: var(--color-text-invert);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    transition: opacity 1.4s ease, visibility 1.4s ease;
+}
+
+#intro.intro--hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#intro-stars {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.intro-content {
+    position: relative;
+    z-index: 2;
+    padding: var(--space-sm);
+    max-width: 640px;
+}
+
+.intro-line {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    opacity: 0;
+    min-height: 2.4em;
+    font-style: italic;
+    color: #f4e9ff;
+}
+
+.intro-date {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 6vw, 2.6rem);
+    letter-spacing: 0.08em;
+    opacity: 0;
+    color: var(--color-gold-light);
+    margin-top: var(--space-sm);
+}
+
+.intro-name-block {
+    opacity: 0;
+    margin-top: var(--space-md);
+}
+
+.intro-photo {
+    width: min(220px, 55vw);
+    border-radius: 50%;
+    margin: 0 auto var(--space-md);
+    border: 4px solid rgba(255,255,255,0.35);
+    box-shadow: 0 0 60px rgba(230, 190, 230, 0.45);
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+}
+
+.intro-name {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 8vw, 4rem);
+    background: linear-gradient(135deg, #ffe6f2, var(--color-gold-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.02em;
+}
+
+.intro-subtitle {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    color: #ecd9ff;
+    font-style: italic;
+    margin-bottom: var(--space-lg);
+}
+
+.intro-cta {
+    opacity: 0;
+}
+
+/* ============================================================
+   HEADER / NAV DE PROGRESO
+   ============================================================ */
+#progress-nav {
+    position: fixed;
+    right: var(--space-xs);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#progress-nav .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(169, 133, 158, 0.3);
+    transition: background var(--transition-base), transform var(--transition-base);
+    display: block;
+}
+
+#progress-nav .dot.is-active {
+    background: var(--color-primary-dark);
+    transform: scale(1.35);
+}
+
+#progress-nav .dot:focus-visible {
+    outline: 2px solid var(--color-secondary-dark);
+    outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+    #progress-nav { display: none; }
+}
+
+/* ---------- Controles flotantes (música / volver arriba) ---------- */
+.floating-controls {
+    position: fixed;
+    left: var(--space-xs);
+    bottom: var(--space-xs);
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.floating-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: transform var(--transition-base), opacity var(--transition-base);
+}
+
+.floating-btn:hover, .floating-btn:focus-visible { transform: translateY(-3px); }
+
+.floating-btn[data-playing="true"] {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #fff;
+}
+
+#back-to-top {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+}
+
+#back-to-top.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* ============================================================
+   HERO / CAPÍTULO "EL DÍA QUE NACISTE"
+   ============================================================ */
+.chapter {
+    position: relative;
+}
+
+.chapter-birth {
+    background: var(--gradient-hero);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl) var(--space-sm);
+    text-align: center;
+}
+
+.birth-photo-frame {
+    position: relative;
+    max-width: 420px;
+    margin: 0 auto var(--space-lg);
+}
+
+.birth-photo-frame img {
+    width: 100%;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-strong);
+    border: 6px solid #fff;
+}
+
+.birth-date {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--color-primary-dark);
+    margin-bottom: var(--space-md);
+}
+
+.story-text {
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    color: var(--color-text-soft);
+}
+
+/* ============================================================
+   CONTADOR DE VIDA
+   ============================================================ */
+.counter-wrap {
+    text-align: center;
+}
+
+.counter-headline {
+    font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+    margin-bottom: var(--space-md);
+}
+
+.counter-big {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-lg);
+}
+
+.counter-big .unit {
+    min-width: 100px;
+}
+
+.counter-big .value {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 3rem);
+    color: var(--color-secondary-dark);
+    display: block;
+}
+
+.counter-big .label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-soft);
+}
+
+.counter-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-sm);
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.counter-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(6px);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-sm);
+    box-shadow: var(--shadow-soft);
+}
+
+.counter-card .icon { font-size: 1.6rem; display: block; margin-bottom: 0.4rem; }
+.counter-card .number {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--color-primary-dark);
+    display: block;
+}
+.counter-card .desc { font-size: 0.85rem; color: var(--color-text-soft); }
+
+/* ============================================================
+   LÍNEA DE TIEMPO
+   ============================================================ */
+.timeline {
+    position: relative;
+    padding-left: 0;
+}
+
+.timeline-year {
+    margin-bottom: var(--space-xl);
+}
+
+.timeline-year-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.timeline-year-header .year {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.timeline-year-header .year-caption {
+    font-style: italic;
+    color: var(--color-text-soft);
+}
+
+.timeline-track {
+    position: relative;
+    padding-left: 28px;
+}
+
+.timeline-track::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: linear-gradient(var(--color-primary), var(--color-secondary));
+    opacity: 0.5;
+}
+
+.timeline-event {
+    position: relative;
+    margin-bottom: var(--space-md);
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.timeline-event.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.timeline-event::before {
+    content: "";
+    position: absolute;
+    left: -28px;
+    top: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-primary-dark);
+    box-shadow: 0 0 0 4px rgba(232, 180, 200, 0.35);
+}
+
+.memory-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    padding: var(--space-sm);
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.memory-card .memory-icon { font-size: 1.4rem; }
+.memory-card .memory-photo {
+    width: 92px;
+    height: 92px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+.memory-card .memory-text { flex: 1; min-width: 140px; }
+.memory-card .memory-date {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary-dark);
+}
+.memory-card h4 { margin: 0.15rem 0; font-size: 1.05rem; }
+.memory-card p { margin: 0; font-size: 0.92rem; color: var(--color-text-soft); }
+
+.chapter-lock {
+    text-align: center;
+    padding: var(--space-md);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-soft);
+    max-width: 320px;
+    margin: 0 auto var(--space-sm);
+}
+.chapter-lock .lock-icon { font-size: 1.4rem; display: block; margin-bottom: 0.3rem; }
+
+.future-years {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+/* ============================================================
+   GALERÍA
+   ============================================================ */
+.gallery-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: var(--space-lg);
+}
+
+.gallery-tab {
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background var(--transition-base), color var(--transition-base);
+}
+
+.gallery-tab.is-active {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary-dark));
+    color: #fff;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform var(--transition-base);
+}
+
+.gallery-grid img:hover, .gallery-grid img:focus-visible {
+    transform: scale(1.04);
+}
+
+/* ---------- Modal de fotos ---------- */
+.photo-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(28, 22, 48, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    padding: var(--space-sm);
+}
+
+.photo-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.photo-modal-inner {
+    position: relative;
+    max-width: min(90vw, 720px);
+    max-height: 85vh;
+    text-align: center;
+}
+
+.photo-modal img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: var(--radius-md);
+    margin: 0 auto;
+    box-shadow: var(--shadow-strong);
+    transform: scale(0.92);
+    transition: transform 0.35s ease;
+}
+
+.photo-modal.is-open img { transform: scale(1); }
+
+.photo-modal-caption {
+    color: #fff;
+    margin-top: var(--space-sm);
+    font-style: italic;
+}
+
+.photo-modal-close,
+.photo-modal-nav {
+    position: absolute;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    backdrop-filter: blur(4px);
+    z-index: 5;
+}
+
+.photo-modal-close { top: -16px; right: -16px; }
+.photo-modal-nav.prev { left: -56px; top: 50%; transform: translateY(-50%); }
+.photo-modal-nav.next { right: -56px; top: 50%; transform: translateY(-50%); }
+
+@media (max-width: 640px) {
+    .photo-modal-nav.prev { left: 4px; }
+    .photo-modal-nav.next { right: 4px; }
+    .photo-modal-close { top: 4px; right: 4px; background: rgba(0,0,0,0.4); }
+}
+
+/* ============================================================
+   POLAROIDS
+   ============================================================ */
+.polaroid-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+}
+
+.polaroid {
+    background: #fff;
+    padding: 12px 12px 22px;
+    box-shadow: var(--shadow-soft);
+    width: 190px;
+    border-radius: 4px;
+    transform: rotate(var(--tilt, -3deg));
+    opacity: 0;
+    transition: transform 0.7s ease, opacity 0.7s ease;
+}
+
+.polaroid.is-visible {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+.polaroid img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 2px;
+    margin-bottom: 8px;
+}
+
+.polaroid .polaroid-caption {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    text-align: center;
+    color: var(--color-text);
+}
+
+.polaroid .polaroid-date {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--color-text-soft);
+}
+
+/* ============================================================
+   PRIMEROS PASOS
+   ============================================================ */
+.steps-section {
+    text-align: center;
+    position: relative;
+}
+
+.footprint-track {
+    position: relative;
+    height: 140px;
+    max-width: 640px;
+    margin: var(--space-md) auto;
+    overflow: hidden;
+}
+
+.footprint {
+    position: absolute;
+    bottom: 10px;
+    font-size: 1.6rem;
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(10px) scale(0.8);
+}
+
+.footprint.is-visible {
+    opacity: 0.85;
+    transform: translateY(0) scale(1);
+}
+
+/* ============================================================
+   CUMPLEAÑOS
+   ============================================================ */
+.birthday-section {
+    text-align: center;
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl) var(--space-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.birthday-first {
+    background: var(--gradient-warm);
+}
+
+.birthday-second {
+    background: linear-gradient(135deg, #ece1fb, #f7e7f4);
+}
+
+.birthday-badge {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    margin-bottom: var(--space-sm);
+}
+
+.birthday-days {
+    display: inline-block;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    font-weight: 700;
+    margin-bottom: var(--space-lg);
+}
+
+.birthday-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.birthday-gallery img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+}
+
+.confetti-layer, .balloon-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* ============================================================
+   MENSAJES ESCONDIDOS
+   ============================================================ */
+.secret-field {
+    position: relative;
+    min-height: 260px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+}
+
+.secret-star {
+    font-size: 1.8rem;
+    background: none;
+    color: var(--color-gold);
+    filter: drop-shadow(0 0 6px rgba(227, 198, 138, 0.6));
+    transition: transform 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.secret-star:hover, .secret-star:focus-visible { transform: scale(1.25) rotate(10deg); }
+
+.secret-message-popup {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -40%);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-strong);
+    padding: var(--space-md) var(--space-lg);
+    max-width: 320px;
+    text-align: center;
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--color-primary-dark);
+}
+
+.secret-message-popup.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%);
+}
+
+/* ============================================================
+   ¿SABES CUÁNTO TE QUIERO?
+   ============================================================ */
+.love-question-section {
+    text-align: center;
+    position: relative;
+}
+
+.love-heart-btn {
+    font-size: 2.2rem;
+    margin: var(--space-md) auto;
+    display: block;
+    animation: none;
+}
+
+.love-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 12, 30, 0);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: background 1.2s ease;
+    text-align: center;
+    overflow: hidden;
+}
+
+.love-overlay.is-active {
+    background: rgba(20, 12, 30, 0.92);
+    pointer-events: auto;
+}
+
+.love-overlay-content {
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 1s ease 0.4s, transform 1s ease 0.4s;
+    color: #fff;
+    padding: var(--space-sm);
+}
+
+.love-overlay.is-active .love-overlay-content {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.love-infinite {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 8vw, 3.6rem);
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, #ffe6f2, var(--color-gold-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.love-symbol { font-size: clamp(2rem, 8vw, 3rem); margin: var(--space-sm) 0; }
+.love-extra { font-style: italic; color: #ecd9ff; }
+
+.love-close {
+    margin-top: var(--space-lg);
+    color: #fff;
+}
+
+/* ============================================================
+   CARTA DE PAPÁ
+   ============================================================ */
+.letter-section { text-align: center; }
+
+.envelope {
+    max-width: 320px;
+    margin: 0 auto var(--space-lg);
+    cursor: pointer;
+    position: relative;
+}
+
+.envelope-emoji {
+    font-size: 5rem;
+    transition: transform var(--transition-base);
+}
+
+.envelope:hover .envelope-emoji, .envelope:focus-visible .envelope-emoji {
+    transform: translateY(-6px) scale(1.05);
+}
+
+.letter-paper {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-strong);
+    padding: var(--space-lg);
+    text-align: left;
+    font-family: var(--font-display);
+    font-size: 1.08rem;
+    line-height: 1.9;
+    color: var(--color-text);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.8s ease, max-height 1s ease;
+}
+
+.letter-paper.is-open {
+    opacity: 1;
+    max-height: 3000px;
+}
+
+.letter-signature {
+    text-align: right;
+    margin-top: var(--space-md);
+    font-style: italic;
+}
+
+/* ============================================================
+   HOY
+   ============================================================ */
+.today-photo {
+    max-width: 420px;
+    margin: 0 auto var(--space-md);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-strong);
+}
+
+/* ============================================================
+   ÁRBOL DE RECUERDOS
+   ============================================================ */
+.tree-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.tree-wrap svg { max-width: 100%; height: auto; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+    text-align: center;
+    padding: var(--space-lg) var(--space-sm);
+    color: var(--color-text-soft);
+    font-size: 0.9rem;
+}
+
+footer strong { color: var(--color-primary-dark); }
+
+/* ---------- Fondo de partículas global ---------- */
+#bg-particles {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* ---------- Corazones flotantes al tocar ---------- */
+.floating-heart {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1.4rem;
+    z-index: 4000;
+    animation: floatHeart 1.6s ease-out forwards;
+}
+
+/* ---------- Música: control de estado ---------- */
+.music-note-icon::after {
+    content: "🎵";
+}
+.floating-btn[data-playing="true"] .music-note-icon::after {
+    content: "🎶";
+}

@@ -1,0 +1,30 @@
+# ============================================================
+# Valeria Maximiliana — .gitignore
+# ============================================================
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos temporales de despliegue / trabajo
+_to_delete/
+*.tmp
+*.log
+
+# Node (por si en algún momento se usan herramientas de desarrollo)
+node_modules/
+npm-debug.log*
+
+# Fotos originales en alta resolución (pesadas, no necesarias en el repo).
+# Elimina esta línea si prefieres versionarlas también.
+fotos-originales-alta-resolucion/
+
+# Archivos de sistema comprimidos usados solo para el despliegue inicial
+*.zip

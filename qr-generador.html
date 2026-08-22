@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de QR — Valeria Maximiliana</title>
+<meta name="description" content="Genera un código QR que apunte al sitio de Valeria Maximiliana para compartirlo fácilmente.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--gradient-hero);
+        padding: var(--space-sm);
+    }
+    .qr-card {
+        background: var(--color-surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-strong);
+        padding: var(--space-lg);
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+    }
+    .qr-card h1 {
+        font-size: 1.6rem;
+        margin-bottom: 0.3rem;
+    }
+    .qr-card p.subtitle {
+        color: var(--color-text-soft);
+        margin-bottom: var(--space-md);
+        font-size: 0.95rem;
+    }
+    .qr-field {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--color-border);
+        font-family: var(--font-body);
+        font-size: 1rem;
+        margin-bottom: var(--space-sm);
+    }
+    .qr-field:focus-visible {
+        outline: 2px solid var(--color-secondary-dark);
+        outline-offset: 2px;
+    }
+    #qr-output {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 220px;
+        margin: var(--space-md) 0;
+    }
+    #qr-output canvas, #qr-output img {
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-soft);
+        background: #fff;
+        padding: 10px;
+    }
+    .qr-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        justify-content: center;
+    }
+    .qr-hint {
+        margin-top: var(--space-md);
+        font-size: 0.85rem;
+        color: var(--color-text-soft);
+    }
+    .back-link {
+        display: inline-block;
+        margin-top: var(--space-md);
+        font-size: 0.9rem;
+        color: var(--color-primary-dark);
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+
+<div class="qr-card">
+    <p class="eyebrow">Compartir</p>
+    <h1>Generador de código QR</h1>
+    <p class="subtitle">Crea un QR que lleve directo a la historia de Valeria Maximiliana.</p>
+
+    <label for="qr-url" class="visually-hidden">URL del sitio</label>
+    <input type="url" id="qr-url" class="qr-field" placeholder="https://usuario.github.io/valeria/" value="https://usuario.github.io/valeria/">
+
+    <div class="qr-actions">
+        <button type="button" class="btn btn-primary" id="generate-btn">Generar QR</button>
+        <button type="button" class="btn btn-outline" id="download-btn" disabled>Guardar imagen</button>
+    </div>
+
+    <div id="qr-output" aria-live="polite"></div>
+
+    <p class="qr-hint">El código se genera completamente en tu navegador: la URL nunca se envía a ningún servidor.</p>
+    <a href="index.html" class="back-link">← Volver a la historia de Valeria</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+    "use strict";
+
+    const urlInput = document.getElementById("qr-url");
+    const output = document.getElementById("qr-output");
+    const generateBtn = document.getElementById("generate-btn");
+    const downloadBtn = document.getElementById("download-btn");
+    let qrInstance = null;
+
+    function generarQR() {
+        const value = urlInput.value.trim();
+        if (!value) {
+            urlInput.focus();
+            return;
+        }
+        if (typeof QRCode === "undefined") {
+            output.innerHTML = "<p style='color:var(--color-text-soft);font-size:0.9rem;'>No se pudo cargar la librería de generación de QR. Verifica tu conexión a internet e intenta nuevamente.</p>";
+            downloadBtn.disabled = true;
+            return;
+        }
+        output.innerHTML = "";
+        qrInstance = new QRCode(output, {
+            text: value,
+            width: 220,
+            height: 220,
+            colorDark: "#4a3b4c",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M
+        });
+        downloadBtn.disabled = false;
+    }
+
+    function descargarQR() {
+        const canvas = output.querySelector("canvas");
+        const img = output.querySelector("img");
+        const source = canvas || img;
+        if (!source) return;
+
+        const link = document.createElement("a");
+        link.download = "qr-valeria.png";
+        link.href = canvas ? canvas.toDataURL("image/png") : source.src;
+        link.click();
+    }
+
+    generateBtn.addEventListener("click", generarQR);
+    downloadBtn.addEventListener("click", descargarQR);
+    urlInput.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") generarQR();
+    });
+
+    // Generar automáticamente uno inicial con el valor de ejemplo.
+    generarQR();
+})();
+</script>
+</body>
+</html>
