@@ -171,7 +171,16 @@ const GALLERY_DATA = {
             "caption": "Bebe bautizo decoracion floral"
         }
     ],
-    "2025": [],
+    "2025": [
+        {
+            "src": "assets/fotos/2026/valeria_local_decorado.jpg",
+            "caption": "Valeria local decorado"
+        },
+        {
+            "src": "assets/fotos/2026/valeria_cama.jpg",
+            "caption": "Valeria cama"
+        }
+    ],
     "2026": [
         {
             "src": "assets/fotos/2026/valeria_local_decorado.jpg",

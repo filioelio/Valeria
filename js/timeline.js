@@ -18,28 +18,28 @@
                     date: "29 de junio de 2024",
                     title: "Nacimiento",
                     text: "El día más importante de mi vida. Llegaste pequeñita a llenarlo todo.",
-                    photo: "assets/fotos/nacimiento/bebe_recien_nacida_cama_1.jpg"
+                    photo: "assets/fotos/nacimiento/bebe_recien_nacida_manta_floral_2.jpg"
                 },
                 {
                     icon: "🌙",
                     date: "Julio 2024",
                     title: "Primer mes",
                     text: "Cada noche aprendiendo a cuidarte, cada mañana un motivo nuevo para sonreír.",
-                    photo: "assets/fotos/nacimiento/bebe_recien_nacida_manta_floral_1.jpg"
+                    photo: "assets/fotos/nacimiento/bebe_manta_lunares_rosa.jpg"
                 },
                 {
                     icon: "😊",
                     date: "2024",
                     title: "Primeras sonrisas",
                     text: "Tus primeras sonrisas se convirtieron en la razón de mis días.",
-                    photo: "assets/fotos/2024/bebe_sentada_cama_dedo.jpg"
+                    photo: "assets/fotos/nacimiento/bebe_recien_nacida_gorro_blanco_1.jpg"
                 },
                 {
                     icon: "🧸",
                     date: "2024",
                     title: "Primeros juegos",
                     text: "Descubriendo el mundo entre sonajeros, colores y risas.",
-                    photo: "assets/fotos/2024/bebe_hamaca_sonajero_jirafa.jpg"
+                    photo: "assets/fotos/nacimiento/bebe_recien_nacida_boca_abierta.jpg"
                 },
                 {
                     icon: "🎄",
@@ -60,42 +60,42 @@
                     date: "2025",
                     title: "Primeros pasos",
                     text: "Paso a paso empezaste a caminar hacia el mundo... y hacia mí.",
-                    photo: null
+                    photo: "assets/fotos/2024/bebe_andador_rosa.jpg"
                 },
                 {
                     icon: "🗣️",
                     date: "2025",
                     title: "Primeras palabras",
                     text: "\"Papá\" se convirtió en la palabra más hermosa que he escuchado.",
-                    photo: null
+                    photo: "assets/fotos/2024/papa_bebe_gorro_tejido.jpg"
                 },
                 {
                     icon: "🎈",
                     date: "2025",
                     title: "Juegos y risas",
                     text: "Cada juego contigo se volvió mi momento favorito del día.",
-                    photo: null
+                    photo: "assets/fotos/2024/bebe_hamaca_sonajero_jirafa.jpg"
                 },
                 {
                     icon: "🚶‍♀️",
                     date: "2025",
                     title: "Paseos",
                     text: "Explorando calles, parques y rincones nuevos, siempre de la mano.",
-                    photo: null
+                    photo: "assets/fotos/2024/hombre_sendero_arbolado.jpg"
                 },
                 {
                     icon: "🔍",
                     date: "2025",
                     title: "Descubrimientos",
                     text: "Cada día una pregunta nueva, cada pregunta una aventura nueva.",
-                    photo: null
+                    photo: "assets/fotos/2024/valeria_reja_amarilla.jpg"
                 },
                 {
                     icon: "🎂",
                     date: "29 de junio de 2025",
                     title: "Primer cumpleaños",
                     text: "365 días de amor cumplidos. Ver el detalle en la sección de tu primer añito.",
-                    photo: null
+                    photo: "assets/fotos/2024/bebe_bautizo_velo_rosa.jpg"
                 }
             ]
         },
@@ -108,7 +108,7 @@
                     icon: "🏔️",
                     date: "2026",
                     title: "Nuevas aventuras",
-                    text: "Juntos frente al Cañón del Colca: tan pequeña frente a un paisaje tan grande.",
+                    text: "Juntos frente al Cañón de Apurímac: tan pequeña frente a un paisaje tan grande.",
                     photo: "assets/fotos/2026/papa_valeria_canon_colca_1.jpg"
                 },
                 {
