@@ -7,7 +7,7 @@
 <meta name="description" content="Genera un código QR que apunte al sitio de Valeria Maximiliana para compartirlo fácilmente.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Quicksand:wght@400;500;600;700&family=Rye&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <style>
     body {
@@ -126,7 +126,7 @@
     const FOTO_TARJETA = "assets/fotos/nacimiento/bebe_recien_nacida_envuelta_blanco.jpg";
 
     /** Dedicatoria que acompaña la tarjeta. Fácilmente editable. */
-    const DEDICATORIA = "El 29 de junio de 2024 llegaste a iluminar mi vida. Escanea este código cuando quieras volver a vivir tu historia.";
+    const DEDICATORIA = "Valeria Maximiliana, mi pedacito de cielo: En tu sonrisa encuentro mi paz y en tu mirada, mi esperanza. Que el mundo sea siempre amable contigo, y que nunca te falte la certeza de lo inmensamente amada que eres.";
 
     function generarQR() {
         const value = urlInput.value.trim();
@@ -185,20 +185,72 @@
         ctx.closePath();
     }
 
-    /** Dibuja una imagen recortada tipo "cover" dentro de un rectángulo redondeado. */
-    function dibujarImagenCover(ctx, img, x, y, w, h, r) {
+    /** Dibuja una imagen recortada tipo "cover" dentro de un círculo. */
+    function dibujarImagenCoverCirculo(ctx, img, cx, cy, radio) {
         ctx.save();
-        trazarRectRedondeado(ctx, x, y, w, h, r);
+        ctx.beginPath();
+        ctx.arc(cx, cy, radio, 0, Math.PI * 2);
+        ctx.closePath();
         ctx.clip();
 
-        const escala = Math.max(w / img.width, h / img.height);
+        const diametro = radio * 2;
+        const escala = Math.max(diametro / img.width, diametro / img.height);
         const anchoDestino = img.width * escala;
         const altoDestino = img.height * escala;
-        const dx = x + (w - anchoDestino) / 2;
-        const dy = y + (h - altoDestino) / 2;
+        const dx = cx - anchoDestino / 2;
+        const dy = cy - altoDestino / 2;
 
         ctx.drawImage(img, dx, dy, anchoDestino, altoDestino);
         ctx.restore();
+    }
+
+    /** Dibuja un pequeño ramo floral (emoji) para decorar una esquina.
+     * Los desplazamientos están pensados para la esquina superior izquierda;
+     * se reflejan con ctx.scale() para las demás esquinas. */
+    function dibujarRamoEsquina(ctx, x, y, invertirX, invertirY) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(invertirX ? -1 : 1, invertirY ? -1 : 1);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const piezas = [
+            { e: "🌸", dx: 14, dy: 14, s: 50, r: -12 },
+            { e: "🌷", dx: 52, dy: 30, s: 42, r: 8 },
+            { e: "🌸", dx: 30, dy: 54, s: 34, r: 4 },
+            { e: "🌿", dx: 66, dy: 8, s: 38, r: 20 },
+            { e: "🌿", dx: 8, dy: 58, s: 34, r: -18 }
+        ];
+
+        piezas.forEach((p) => {
+            ctx.save();
+            ctx.translate(p.dx, p.dy);
+            ctx.rotate((p.r * Math.PI) / 180);
+            ctx.font = p.s + "px serif";
+            ctx.fillText(p.e, 0, 0);
+            ctx.restore();
+        });
+        ctx.restore();
+    }
+
+    /** Mide cuántas líneas ocupará un texto envuelto, sin dibujarlo. */
+    function medirLineasEnvueltas(ctx, texto, anchoMax) {
+        const palabras = texto.split(" ");
+        let linea = "";
+        let lineas = 0;
+
+        palabras.forEach((palabra, i) => {
+            const pruebaLinea = linea ? linea + " " + palabra : palabra;
+            if (ctx.measureText(pruebaLinea).width > anchoMax && linea) {
+                lineas++;
+                linea = palabra;
+            } else {
+                linea = pruebaLinea;
+            }
+            if (i === palabras.length - 1) lineas++;
+        });
+
+        return lineas;
     }
 
     /** Dibuja texto centrado con espaciado manual entre letras (canvas no soporta letter-spacing). */
@@ -251,22 +303,44 @@
         ctx.restore();
     }
 
+    const FUENTE_NOMBRE = "58px 'Rye', 'Copperplate', Georgia, serif";
+    const FUENTE_DEDICATORIA = "italic 500 29px 'Playfair Display', Georgia, serif";
+
     async function construirTarjeta() {
         const fuenteQR = obtenerFuenteQR();
         if (!fuenteQR) return null;
 
         // Nos aseguramos de que las tipografías estén cargadas antes de dibujar texto.
         await Promise.all([
-            document.fonts.load("700 62px 'Playfair Display'"),
-            document.fonts.load("italic 500 30px 'Playfair Display'"),
-            document.fonts.load("italic 500 27px 'Playfair Display'"),
+            document.fonts.load(FUENTE_NOMBRE),
+            document.fonts.load("italic 500 32px 'Playfair Display'"),
+            document.fonts.load(FUENTE_DEDICATORIA),
             document.fonts.load("600 24px 'Quicksand'")
         ]).catch(() => {});
 
         const foto = await cargarImagen(FOTO_TARJETA);
 
         const W = 1080;
-        const H = 1620;
+        const margen = 60;
+        const cardW = W - margen * 2;
+        const centroX = W / 2;
+        const anchoTextoDedicatoria = cardW - 240;
+
+        // ---------- Medimos la dedicatoria de antemano para calcular el alto total ----------
+        const medidor = document.createElement("canvas").getContext("2d");
+        medidor.font = FUENTE_DEDICATORIA;
+        const lineasDedicatoria = medirLineasEnvueltas(medidor, DEDICATORIA, anchoTextoDedicatoria);
+        const altoLineaDedicatoria = 44;
+
+        const fotoRadio = 210;
+        const alturaFoto = fotoRadio * 2;
+        const alturaEncabezado = 70 + alturaFoto + 70 + 58 + 46 + 34 + 30; // margen + foto + nombre + subtítulo + divisor
+        const alturaDedicatoria = lineasDedicatoria * altoLineaDedicatoria + 40;
+        const alturaQR = 40 + 320 + 54 + 34 + 30 + 50; // caja qr + pie + margen inferior
+
+        const cardH = alturaEncabezado + alturaDedicatoria + alturaQR;
+        const H = cardH + margen * 2;
+
         const canvas = document.createElement("canvas");
         canvas.width = W;
         canvas.height = H;
@@ -282,7 +356,7 @@
 
         // Pequeños destellos decorativos dispersos en el fondo.
         const destellos = [
-            [90, 120], [980, 90], [70, 780], [1000, 620], [60, 1450], [1010, 1500], [940, 260], [110, 1080]
+            [90, 120], [980, 90], [70, H - 300], [1000, H - 420], [60, H - 90], [1010, H - 60]
         ];
         destellos.forEach(([dx, dy], i) => {
             ctx.save();
@@ -295,11 +369,8 @@
         });
 
         // ---------- Tarjeta blanca central con sombra suave ----------
-        const margen = 60;
         const cardX = margen;
         const cardY = margen;
-        const cardW = W - margen * 2;
-        const cardH = H - margen * 2;
 
         ctx.save();
         ctx.shadowColor = "rgba(90, 60, 90, 0.28)";
@@ -318,34 +389,51 @@
         ctx.stroke();
         ctx.restore();
 
-        const centroX = W / 2;
+        // ---------- Ramos florales en las cuatro esquinas ----------
+        ctx.save();
+        trazarRectRedondeado(ctx, cardX, cardY, cardW, cardH, 46);
+        ctx.clip();
+        dibujarRamoEsquina(ctx, cardX - 6, cardY - 6, false, false);
+        dibujarRamoEsquina(ctx, cardX + cardW + 6, cardY - 6, true, false);
+        dibujarRamoEsquina(ctx, cardX - 6, cardY + cardH + 6, false, true);
+        dibujarRamoEsquina(ctx, cardX + cardW + 6, cardY + cardH + 6, true, true);
+        ctx.restore();
 
-        // ---------- Fotografía ----------
-        const fotoTam = 460;
-        const fotoX = centroX - fotoTam / 2;
-        const fotoY = cardY + 74;
+        // ---------- Fotografía circular ----------
+        const fotoCX = centroX;
+        const fotoCY = cardY + 70 + fotoRadio;
 
-        // Marco blanco tipo "polaroid" detrás de la foto.
+        // Anillo blanco detrás de la foto, a modo de marco.
         ctx.save();
         ctx.shadowColor = "rgba(90, 60, 90, 0.25)";
         ctx.shadowBlur = 30;
         ctx.shadowOffsetY = 12;
         ctx.fillStyle = "#ffffff";
-        trazarRectRedondeado(ctx, fotoX - 14, fotoY - 14, fotoTam + 28, fotoTam + 28, 36);
+        ctx.beginPath();
+        ctx.arc(fotoCX, fotoCY, fotoRadio + 14, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
 
-        dibujarImagenCover(ctx, foto, fotoX, fotoY, fotoTam, fotoTam, 26);
+        // Segundo anillo, dorado, muy fino, como detalle extra.
+        ctx.save();
+        ctx.strokeStyle = "rgba(227, 198, 138, 0.85)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(fotoCX, fotoCY, fotoRadio + 6, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
 
-        let cursorY = fotoY + fotoTam + 76;
+        dibujarImagenCoverCirculo(ctx, foto, fotoCX, fotoCY, fotoRadio);
 
-        // ---------- Nombre ----------
+        let cursorY = fotoCY + fotoRadio + 76;
+
+        // ---------- Nombre (tipografía decorativa, estilo cartel antiguo) ----------
         ctx.textAlign = "center";
         ctx.fillStyle = "#c98da8";
-        ctx.font = "700 60px 'Playfair Display', Georgia, serif";
-        dibujarTextoEspaciado(ctx, "VALERIA MAXIMILIANA", centroX, cursorY, 4);
+        ctx.font = FUENTE_NOMBRE;
+        dibujarTextoEspaciado(ctx, "VALERIA MAXIMILIANA", centroX, cursorY, 3);
 
-        cursorY += 52;
+        cursorY += 48;
         ctx.fillStyle = "#a68fce";
         ctx.font = "italic 500 32px 'Playfair Display', Georgia, serif";
         ctx.fillText("Mi pequeña princesa", centroX, cursorY);
@@ -367,8 +455,8 @@
         // ---------- Dedicatoria ----------
         cursorY += 56;
         ctx.fillStyle = "#4a3b4c";
-        ctx.font = "italic 500 29px 'Playfair Display', Georgia, serif";
-        cursorY = dibujarTextoEnvuelto(ctx, DEDICATORIA, centroX, cursorY, cardW - 220, 42);
+        ctx.font = FUENTE_DEDICATORIA;
+        cursorY = dibujarTextoEnvuelto(ctx, DEDICATORIA, centroX, cursorY, anchoTextoDedicatoria, altoLineaDedicatoria);
 
         // ---------- Tarjeta blanca para el QR ----------
         cursorY += 40;
