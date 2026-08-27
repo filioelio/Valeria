@@ -7,7 +7,7 @@
 <meta name="description" content="Genera un código QR que apunte al sitio de Valeria Maximiliana para compartirlo fácilmente.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <style>
     body {
@@ -80,6 +80,13 @@
         color: var(--color-primary-dark);
         text-decoration: underline;
     }
+    #download-btn[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    #download-btn.is-working {
+        opacity: 0.85;
+    }
 </style>
 </head>
 <body>
@@ -103,6 +110,7 @@
     <a href="index.html" class="back-link">← Volver a la historia de Valeria</a>
 </div>
 
+<script src="js/config.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 (function () {
@@ -113,6 +121,12 @@
     const generateBtn = document.getElementById("generate-btn");
     const downloadBtn = document.getElementById("download-btn");
     let qrInstance = null;
+
+    /** Ruta de la fotografía de nacimiento usada en la tarjeta para guardar. */
+    const FOTO_TARJETA = "assets/fotos/nacimiento/bebe_recien_nacida_envuelta_blanco.jpg";
+
+    /** Dedicatoria que acompaña la tarjeta. Fácilmente editable. */
+    const DEDICATORIA = "El 29 de junio de 2024 llegaste a iluminar mi vida. Escanea este código cuando quieras volver a vivir tu historia.";
 
     function generarQR() {
         const value = urlInput.value.trim();
@@ -128,8 +142,8 @@
         output.innerHTML = "";
         qrInstance = new QRCode(output, {
             text: value,
-            width: 220,
-            height: 220,
+            width: 260,
+            height: 260,
             colorDark: "#4a3b4c",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.M
@@ -137,16 +151,294 @@
         downloadBtn.disabled = false;
     }
 
-    function descargarQR() {
-        const canvas = output.querySelector("canvas");
-        const img = output.querySelector("img");
-        const source = canvas || img;
-        if (!source) return;
+    /* ============================================================
+       TARJETA PARA GUARDAR
+       Compone en un <canvas> de alta resolución: fotografía de
+       nacimiento + nombre + dedicatoria + código QR, con un diseño
+       propio (no es solo el QR suelto).
+       ============================================================ */
 
-        const link = document.createElement("a");
-        link.download = "qr-valeria.png";
-        link.href = canvas ? canvas.toDataURL("image/png") : source.src;
-        link.click();
+    function cargarImagen(src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = src;
+        });
+    }
+
+    function obtenerFuenteQR() {
+        const canvas = output.querySelector("canvas");
+        if (canvas) return canvas;
+        const img = output.querySelector("img");
+        return img || null;
+    }
+
+    /** Dibuja un rectángulo con esquinas redondeadas (ruta reutilizable). */
+    function trazarRectRedondeado(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+    }
+
+    /** Dibuja una imagen recortada tipo "cover" dentro de un rectángulo redondeado. */
+    function dibujarImagenCover(ctx, img, x, y, w, h, r) {
+        ctx.save();
+        trazarRectRedondeado(ctx, x, y, w, h, r);
+        ctx.clip();
+
+        const escala = Math.max(w / img.width, h / img.height);
+        const anchoDestino = img.width * escala;
+        const altoDestino = img.height * escala;
+        const dx = x + (w - anchoDestino) / 2;
+        const dy = y + (h - altoDestino) / 2;
+
+        ctx.drawImage(img, dx, dy, anchoDestino, altoDestino);
+        ctx.restore();
+    }
+
+    /** Dibuja texto centrado con espaciado manual entre letras (canvas no soporta letter-spacing). */
+    function dibujarTextoEspaciado(ctx, texto, centroX, y, espaciado) {
+        const anchos = [...texto].map((c) => ctx.measureText(c).width);
+        const anchoTotal = anchos.reduce((a, b) => a + b, 0) + espaciado * (texto.length - 1);
+        let cursorX = centroX - anchoTotal / 2;
+        [...texto].forEach((c, i) => {
+            ctx.fillText(c, cursorX + anchos[i] / 2, y);
+            cursorX += anchos[i] + espaciado;
+        });
+    }
+
+    /** Envuelve texto centrado dentro de un ancho máximo y devuelve la siguiente coordenada Y. */
+    function dibujarTextoEnvuelto(ctx, texto, centroX, y, anchoMax, altoLinea) {
+        const palabras = texto.split(" ");
+        let linea = "";
+        let cursorY = y;
+
+        palabras.forEach((palabra, i) => {
+            const pruebaLinea = linea ? linea + " " + palabra : palabra;
+            if (ctx.measureText(pruebaLinea).width > anchoMax && linea) {
+                ctx.fillText(linea, centroX, cursorY);
+                linea = palabra;
+                cursorY += altoLinea;
+            } else {
+                linea = pruebaLinea;
+            }
+            if (i === palabras.length - 1) {
+                ctx.fillText(linea, centroX, cursorY);
+            }
+        });
+
+        return cursorY + altoLinea;
+    }
+
+    /** Dibuja un pequeño corazón relleno (para acentos decorativos). */
+    function dibujarCorazon(ctx, cx, cy, tamano, color) {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        const top = cy - tamano * 0.35;
+        ctx.moveTo(cx, top + tamano * 0.35);
+        ctx.bezierCurveTo(cx, top, cx - tamano, top, cx - tamano, top + tamano * 0.35);
+        ctx.bezierCurveTo(cx - tamano, top + tamano * 0.75, cx, top + tamano, cx, top + tamano * 1.35);
+        ctx.bezierCurveTo(cx, top + tamano, cx + tamano, top + tamano * 0.75, cx + tamano, top + tamano * 0.35);
+        ctx.bezierCurveTo(cx + tamano, top, cx, top, cx, top + tamano * 0.35);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+    }
+
+    async function construirTarjeta() {
+        const fuenteQR = obtenerFuenteQR();
+        if (!fuenteQR) return null;
+
+        // Nos aseguramos de que las tipografías estén cargadas antes de dibujar texto.
+        await Promise.all([
+            document.fonts.load("700 62px 'Playfair Display'"),
+            document.fonts.load("italic 500 30px 'Playfair Display'"),
+            document.fonts.load("italic 500 27px 'Playfair Display'"),
+            document.fonts.load("600 24px 'Quicksand'")
+        ]).catch(() => {});
+
+        const foto = await cargarImagen(FOTO_TARJETA);
+
+        const W = 1080;
+        const H = 1620;
+        const canvas = document.createElement("canvas");
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext("2d");
+
+        // ---------- Fondo con degradado suave (paleta del sitio) ----------
+        const fondo = ctx.createLinearGradient(0, 0, W, H);
+        fondo.addColorStop(0, "#fdf2f6");
+        fondo.addColorStop(0.5, "#f3e6f7");
+        fondo.addColorStop(1, "#eee0f6");
+        ctx.fillStyle = fondo;
+        ctx.fillRect(0, 0, W, H);
+
+        // Pequeños destellos decorativos dispersos en el fondo.
+        const destellos = [
+            [90, 120], [980, 90], [70, 780], [1000, 620], [60, 1450], [1010, 1500], [940, 260], [110, 1080]
+        ];
+        destellos.forEach(([dx, dy], i) => {
+            ctx.save();
+            ctx.globalAlpha = 0.5;
+            ctx.fillStyle = i % 2 === 0 ? "#e3c68a" : "#c9b6e4";
+            ctx.beginPath();
+            ctx.arc(dx, dy, 5 + (i % 3) * 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        });
+
+        // ---------- Tarjeta blanca central con sombra suave ----------
+        const margen = 60;
+        const cardX = margen;
+        const cardY = margen;
+        const cardW = W - margen * 2;
+        const cardH = H - margen * 2;
+
+        ctx.save();
+        ctx.shadowColor = "rgba(90, 60, 90, 0.28)";
+        ctx.shadowBlur = 45;
+        ctx.shadowOffsetY = 18;
+        ctx.fillStyle = "#fffaf6";
+        trazarRectRedondeado(ctx, cardX, cardY, cardW, cardH, 46);
+        ctx.fill();
+        ctx.restore();
+
+        // Borde dorado sutil.
+        ctx.save();
+        trazarRectRedondeado(ctx, cardX + 3, cardY + 3, cardW - 6, cardH - 6, 44);
+        ctx.strokeStyle = "rgba(227, 198, 138, 0.55)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+
+        const centroX = W / 2;
+
+        // ---------- Fotografía ----------
+        const fotoTam = 460;
+        const fotoX = centroX - fotoTam / 2;
+        const fotoY = cardY + 74;
+
+        // Marco blanco tipo "polaroid" detrás de la foto.
+        ctx.save();
+        ctx.shadowColor = "rgba(90, 60, 90, 0.25)";
+        ctx.shadowBlur = 30;
+        ctx.shadowOffsetY = 12;
+        ctx.fillStyle = "#ffffff";
+        trazarRectRedondeado(ctx, fotoX - 14, fotoY - 14, fotoTam + 28, fotoTam + 28, 36);
+        ctx.fill();
+        ctx.restore();
+
+        dibujarImagenCover(ctx, foto, fotoX, fotoY, fotoTam, fotoTam, 26);
+
+        let cursorY = fotoY + fotoTam + 76;
+
+        // ---------- Nombre ----------
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#c98da8";
+        ctx.font = "700 60px 'Playfair Display', Georgia, serif";
+        dibujarTextoEspaciado(ctx, "VALERIA MAXIMILIANA", centroX, cursorY, 4);
+
+        cursorY += 52;
+        ctx.fillStyle = "#a68fce";
+        ctx.font = "italic 500 32px 'Playfair Display', Georgia, serif";
+        ctx.fillText("Mi pequeña princesa", centroX, cursorY);
+
+        // ---------- Divider ornamental ----------
+        cursorY += 46;
+        ctx.save();
+        ctx.strokeStyle = "rgba(227, 198, 138, 0.8)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(centroX - 150, cursorY);
+        ctx.lineTo(centroX - 26, cursorY);
+        ctx.moveTo(centroX + 26, cursorY);
+        ctx.lineTo(centroX + 150, cursorY);
+        ctx.stroke();
+        ctx.restore();
+        dibujarCorazon(ctx, centroX, cursorY - 10, 13, "#e8b4c8");
+
+        // ---------- Dedicatoria ----------
+        cursorY += 56;
+        ctx.fillStyle = "#4a3b4c";
+        ctx.font = "italic 500 29px 'Playfair Display', Georgia, serif";
+        cursorY = dibujarTextoEnvuelto(ctx, DEDICATORIA, centroX, cursorY, cardW - 220, 42);
+
+        // ---------- Tarjeta blanca para el QR ----------
+        cursorY += 40;
+        const qrBoxTam = 320;
+        const qrBoxX = centroX - qrBoxTam / 2;
+        const qrBoxY = cursorY;
+
+        ctx.save();
+        ctx.shadowColor = "rgba(90, 60, 90, 0.2)";
+        ctx.shadowBlur = 26;
+        ctx.shadowOffsetY = 10;
+        ctx.fillStyle = "#ffffff";
+        trazarRectRedondeado(ctx, qrBoxX, qrBoxY, qrBoxTam, qrBoxTam, 28);
+        ctx.fill();
+        ctx.restore();
+        ctx.save();
+        trazarRectRedondeado(ctx, qrBoxX + 2, qrBoxY + 2, qrBoxTam - 4, qrBoxTam - 4, 26);
+        ctx.strokeStyle = "rgba(232, 180, 200, 0.6)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+
+        const qrTam = qrBoxTam - 40;
+        ctx.drawImage(fuenteQR, qrBoxX + 20, qrBoxY + 20, qrTam, qrTam);
+
+        cursorY = qrBoxY + qrBoxTam + 54;
+
+        // ---------- Pie ----------
+        ctx.fillStyle = "#c98da8";
+        ctx.font = "600 23px 'Quicksand', sans-serif";
+        ctx.fillText("Escanea para conocer mi historia", centroX, cursorY);
+
+        cursorY += 34;
+        ctx.fillStyle = "#a68fce";
+        ctx.font = "500 19px 'Quicksand', sans-serif";
+        ctx.fillText("29 de junio de 2024  ·  Hecho con amor de Papá ❤️", centroX, cursorY);
+
+        return canvas;
+    }
+
+    async function descargarQR() {
+        const fuenteQR = obtenerFuenteQR();
+        if (!fuenteQR) return;
+
+        downloadBtn.disabled = true;
+        downloadBtn.classList.add("is-working");
+        const textoOriginal = downloadBtn.textContent;
+        downloadBtn.textContent = "Generando tarjeta…";
+
+        try {
+            const tarjeta = await construirTarjeta();
+            if (!tarjeta) return;
+
+            const link = document.createElement("a");
+            link.download = "valeria-maximiliana-tarjeta.png";
+            link.href = tarjeta.toDataURL("image/png");
+            link.click();
+        } catch (err) {
+            // Si la fotografía no pudo cargarse (por ejemplo, al abrir el
+            // archivo directamente sin servidor local), se informa al usuario
+            // en vez de fallar en silencio.
+            output.insertAdjacentHTML(
+                "afterend",
+                "<p style='color:var(--color-text-soft);font-size:0.85rem;text-align:center;'>No se pudo generar la tarjeta con la fotografía. Prueba abriendo el sitio con un servidor local (ver README).</p>"
+            );
+        } finally {
+            downloadBtn.disabled = false;
+            downloadBtn.classList.remove("is-working");
+            downloadBtn.textContent = textoOriginal;
+        }
     }
 
     generateBtn.addEventListener("click", generarQR);
