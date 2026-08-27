@@ -3,7 +3,7 @@
  * Cambia estos valores para actualizar textos y fecha en todo el sitio.
  */
 const CONFIG = {
-    nombre: "Valeria Maximiliana Carrasco",
+    nombre: "Valeria Maximiliana Carrasco Pinares",
     nombreCorto: "Valeria",
     fechaNacimiento: "2024-06-29", // AAAA-MM-DD
     autor: "Papá",
